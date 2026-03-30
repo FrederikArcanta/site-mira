@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIRA — Privacy Policy</title>
+    <style>
+        :root {
+            --primary: #475E7B;
+            --bg: #FAFBFC;
+            --card: #FFFFFF;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f172a;
+                --card: #1e293b;
+                --text: #e2e8f0;
+                --muted: #94a3b8;
+                --border: #334155;
+            }
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 0;
+        }
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 48px 24px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .header p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 32px 24px 64px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+        p, li { font-size: 0.95rem; color: var(--text); }
+        ul { padding-left: 20px; margin-top: 8px; }
+        li { margin-bottom: 6px; }
+        .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+        .lang-switcher {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .lang-switcher button {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 6px 16px;
+            margin: 0 4px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+        .lang-switcher button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+        [lang]:not(.active-lang) { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>MIRA</h1>
+    <p>The Catering Consultant — by Triple Solutions</p>
+</div>
+
+<div class="container">
+    <div class="lang-switcher">
+        <button class="active" onclick="setLang('nl')">Nederlands</button>
+        <button onclick="setLang('en')">English</button>
+        <button onclick="setLang('fr')">Français</button>
+    </div>
+
+    <!-- DUTCH -->
+    <div lang="nl" class="active-lang">
+        <div class="card">
+            <span class="badge">Privacybeleid</span>
+            <h2>1. Wie zijn wij?</h2>
+            <p>MIRA is een AI-gestuurde adviesapp ontwikkeld door <strong>Triple Solutions BV</strong> (handelend als "The Catering Consultant"), gevestigd in België. De app biedt professioneel advies voor de catering- en hospitality-sector.</p>
+        </div>
+
+        <div class="card">
+            <h2>2. Welke gegevens verzamelen wij?</h2>
+            <p>De MIRA-app verzamelt en verwerkt de volgende gegevens:</p>
+            <ul>
+                <li><strong>Authenticatiegegevens:</strong> E-mailadres en naam via Authelia (ons authenticatiesysteem). Deze worden gebruikt om u te identificeren en toegang te verlenen.</li>
+                <li><strong>Gespreksgegevens:</strong> Vragen die u stelt en antwoorden die MIRA genereert. Deze worden opgeslagen op onze servers om gespreksgeschiedenis te bieden.</li>
+                <li><strong>Technische gegevens:</strong> Sessiecookies voor authenticatie. Geen device-ID's, locatiegegevens of tracking.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>3. Waarvoor gebruiken wij uw gegevens?</h2>
+            <ul>
+                <li>Authenticatie en toegangsbeheer</li>
+                <li>Het verwerken van uw vragen en het genereren van antwoorden</li>
+                <li>Het opslaan van gespreksgeschiedenis zodat u eerdere gesprekken kunt terugvinden</li>
+                <li>Het verbeteren van de kwaliteit van de AI-antwoorden</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>4. Delen wij uw gegevens?</h2>
+            <p>Wij delen uw gegevens <strong>niet</strong> met derden, behalve:</p>
+            <ul>
+                <li><strong>AI-verwerking:</strong> Uw vragen worden verwerkt door Anthropic (Claude AI) om antwoorden te genereren. Anthropic verwerkt deze gegevens volgens hun eigen privacybeleid en gebruikt ze niet voor training.</li>
+                <li><strong>Wettelijke verplichting:</strong> Indien wettelijk vereist door een bevoegde autoriteit.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>5. Hoe beschermen wij uw gegevens?</h2>
+            <ul>
+                <li>Alle communicatie is versleuteld via HTTPS/TLS</li>
+                <li>Authenticatie via Authelia met sessie-cookies</li>
+                <li>Servers bevinden zich in de EU</li>
+                <li>Toegang is beperkt tot geautoriseerde gebruikers</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>6. Hoe lang bewaren wij uw gegevens?</h2>
+            <p>Gespreksgegevens worden bewaard zolang uw account actief is. U kunt individuele gesprekken verwijderen via de app. Bij het verwijderen van uw account worden alle gegevens gewist.</p>
+        </div>
+
+        <div class="card">
+            <h2>7. Uw rechten (GDPR)</h2>
+            <p>Onder de Algemene Verordening Gegevensbescherming (AVG/GDPR) heeft u recht op:</p>
+            <ul>
+                <li><strong>Inzage:</strong> U kunt opvragen welke gegevens wij van u bewaren</li>
+                <li><strong>Rectificatie:</strong> U kunt onjuiste gegevens laten corrigeren</li>
+                <li><strong>Verwijdering:</strong> U kunt verzoeken om verwijdering van uw gegevens</li>
+                <li><strong>Overdraagbaarheid:</strong> U kunt een kopie van uw gegevens opvragen</li>
+                <li><strong>Bezwaar:</strong> U kunt bezwaar maken tegen de verwerking van uw gegevens</li>
+            </ul>
+            <p style="margin-top: 12px;">Voor het uitoefenen van deze rechten, neem contact op via <strong>info@arcanta.io</strong></p>
+        </div>
+
+        <div class="card">
+            <h2>8. Cookies</h2>
+            <p>De app gebruikt uitsluitend <strong>functionele cookies</strong> (Authelia sessiecookies) die noodzakelijk zijn voor authenticatie. Er worden geen tracking-, advertentie- of analytische cookies gebruikt.</p>
+        </div>
+
+        <div class="card">
+            <h2>9. Kinderen</h2>
+            <p>MIRA is niet bedoeld voor gebruikers jonger dan 16 jaar. Wij verzamelen niet bewust gegevens van minderjarigen.</p>
+        </div>
+
+        <div class="card">
+            <h2>10. Wijzigingen</h2>
+            <p>Wij kunnen dit privacybeleid van tijd tot tijd bijwerken. De meest recente versie is altijd beschikbaar via deze pagina.</p>
+            <p style="margin-top: 8px; color: var(--muted);">Laatst bijgewerkt: 30 maart 2026</p>
+        </div>
+
+        <div class="card">
+            <h2>11. Contact</h2>
+            <p><strong>Triple Solutions BV</strong><br>
+            E-mail: <a href="mailto:info@arcanta.io" style="color: var(--primary);">info@arcanta.io</a><br>
+            Website: <a href="https://www.arcanta.io" style="color: var(--primary);">www.arcanta.io</a></p>
+        </div>
+    </div>
+
+    <!-- ENGLISH -->
+    <div lang="en">
+        <div class="card">
+            <span class="badge">Privacy Policy</span>
+            <h2>1. Who are we?</h2>
+            <p>MIRA is an AI-powered advisory app developed by <strong>Triple Solutions BV</strong> (trading as "The Catering Consultant"), based in Belgium. The app provides professional advice for the catering and hospitality sector.</p>
+        </div>
+
+        <div class="card">
+            <h2>2. What data do we collect?</h2>
+            <p>The MIRA app collects and processes the following data:</p>
+            <ul>
+                <li><strong>Authentication data:</strong> Email address and name via Authelia (our authentication system). Used to identify you and grant access.</li>
+                <li><strong>Conversation data:</strong> Questions you ask and answers MIRA generates. Stored on our servers to provide conversation history.</li>
+                <li><strong>Technical data:</strong> Session cookies for authentication. No device IDs, location data, or tracking.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>3. How do we use your data?</h2>
+            <ul>
+                <li>Authentication and access management</li>
+                <li>Processing your questions and generating answers</li>
+                <li>Storing conversation history so you can review past conversations</li>
+                <li>Improving the quality of AI responses</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>4. Do we share your data?</h2>
+            <p>We do <strong>not</strong> share your data with third parties, except:</p>
+            <ul>
+                <li><strong>AI processing:</strong> Your questions are processed by Anthropic (Claude AI) to generate answers. Anthropic processes this data according to their own privacy policy and does not use it for training.</li>
+                <li><strong>Legal obligation:</strong> If legally required by a competent authority.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>5. How do we protect your data?</h2>
+            <ul>
+                <li>All communication is encrypted via HTTPS/TLS</li>
+                <li>Authentication via Authelia with session cookies</li>
+                <li>Servers are located in the EU</li>
+                <li>Access is restricted to authorised users</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>6. How long do we retain your data?</h2>
+            <p>Conversation data is retained as long as your account is active. You can delete individual conversations via the app. When your account is deleted, all data is removed.</p>
+        </div>
+
+        <div class="card">
+            <h2>7. Your rights (GDPR)</h2>
+            <p>Under the General Data Protection Regulation (GDPR) you have the right to:</p>
+            <ul>
+                <li><strong>Access:</strong> Request what data we hold about you</li>
+                <li><strong>Rectification:</strong> Have incorrect data corrected</li>
+                <li><strong>Erasure:</strong> Request deletion of your data</li>
+                <li><strong>Portability:</strong> Request a copy of your data</li>
+                <li><strong>Object:</strong> Object to the processing of your data</li>
+            </ul>
+            <p style="margin-top: 12px;">To exercise these rights, contact us at <strong>info@arcanta.io</strong></p>
+        </div>
+
+        <div class="card">
+            <h2>8. Cookies</h2>
+            <p>The app uses only <strong>functional cookies</strong> (Authelia session cookies) necessary for authentication. No tracking, advertising, or analytics cookies are used.</p>
+        </div>
+
+        <div class="card">
+            <h2>9. Children</h2>
+            <p>MIRA is not intended for users under 16 years of age. We do not knowingly collect data from minors.</p>
+        </div>
+
+        <div class="card">
+            <h2>10. Changes</h2>
+            <p>We may update this privacy policy from time to time. The most recent version is always available on this page.</p>
+            <p style="margin-top: 8px; color: var(--muted);">Last updated: 30 March 2026</p>
+        </div>
+
+        <div class="card">
+            <h2>11. Contact</h2>
+            <p><strong>Triple Solutions BV</strong><br>
+            Email: <a href="mailto:info@arcanta.io" style="color: var(--primary);">info@arcanta.io</a><br>
+            Website: <a href="https://www.arcanta.io" style="color: var(--primary);">www.arcanta.io</a></p>
+        </div>
+    </div>
+
+    <!-- FRENCH -->
+    <div lang="fr">
+        <div class="card">
+            <span class="badge">Politique de confidentialité</span>
+            <h2>1. Qui sommes-nous ?</h2>
+            <p>MIRA est une application de conseil basée sur l'IA, développée par <strong>Triple Solutions BV</strong> (sous le nom commercial « The Catering Consultant »), basée en Belgique. L'application fournit des conseils professionnels pour le secteur de la restauration et de l'hôtellerie.</p>
+        </div>
+
+        <div class="card">
+            <h2>2. Quelles données collectons-nous ?</h2>
+            <p>L'application MIRA collecte et traite les données suivantes :</p>
+            <ul>
+                <li><strong>Données d'authentification :</strong> Adresse e-mail et nom via Authelia (notre système d'authentification). Utilisées pour vous identifier et vous accorder l'accès.</li>
+                <li><strong>Données de conversation :</strong> Questions que vous posez et réponses générées par MIRA. Stockées sur nos serveurs pour fournir l'historique des conversations.</li>
+                <li><strong>Données techniques :</strong> Cookies de session pour l'authentification. Aucun identifiant d'appareil, donnée de localisation ou suivi.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>3. Comment utilisons-nous vos données ?</h2>
+            <ul>
+                <li>Authentification et gestion des accès</li>
+                <li>Traitement de vos questions et génération de réponses</li>
+                <li>Stockage de l'historique des conversations</li>
+                <li>Amélioration de la qualité des réponses IA</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>4. Partageons-nous vos données ?</h2>
+            <p>Nous ne partageons <strong>pas</strong> vos données avec des tiers, sauf :</p>
+            <ul>
+                <li><strong>Traitement IA :</strong> Vos questions sont traitées par Anthropic (Claude AI) pour générer des réponses. Anthropic traite ces données conformément à sa propre politique de confidentialité et ne les utilise pas pour l'entraînement.</li>
+                <li><strong>Obligation légale :</strong> Si la loi l'exige par une autorité compétente.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>5. Comment protégeons-nous vos données ?</h2>
+            <ul>
+                <li>Toutes les communications sont chiffrées via HTTPS/TLS</li>
+                <li>Authentification via Authelia avec cookies de session</li>
+                <li>Serveurs situés dans l'UE</li>
+                <li>Accès limité aux utilisateurs autorisés</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>6. Combien de temps conservons-nous vos données ?</h2>
+            <p>Les données de conversation sont conservées tant que votre compte est actif. Vous pouvez supprimer des conversations individuelles via l'application. Lors de la suppression de votre compte, toutes les données sont effacées.</p>
+        </div>
+
+        <div class="card">
+            <h2>7. Vos droits (RGPD)</h2>
+            <p>En vertu du Règlement Général sur la Protection des Données (RGPD), vous avez le droit de :</p>
+            <ul>
+                <li><strong>Accès :</strong> Demander quelles données nous détenons à votre sujet</li>
+                <li><strong>Rectification :</strong> Faire corriger des données inexactes</li>
+                <li><strong>Effacement :</strong> Demander la suppression de vos données</li>
+                <li><strong>Portabilité :</strong> Demander une copie de vos données</li>
+                <li><strong>Opposition :</strong> Vous opposer au traitement de vos données</li>
+            </ul>
+            <p style="margin-top: 12px;">Pour exercer ces droits, contactez-nous à <strong>info@arcanta.io</strong></p>
+        </div>
+
+        <div class="card">
+            <h2>8. Cookies</h2>
+            <p>L'application utilise uniquement des <strong>cookies fonctionnels</strong> (cookies de session Authelia) nécessaires à l'authentification. Aucun cookie de suivi, publicitaire ou analytique n'est utilisé.</p>
+        </div>
+
+        <div class="card">
+            <h2>9. Enfants</h2>
+            <p>MIRA n'est pas destinée aux utilisateurs de moins de 16 ans. Nous ne collectons pas sciemment de données de mineurs.</p>
+        </div>
+
+        <div class="card">
+            <h2>10. Modifications</h2>
+            <p>Nous pouvons mettre à jour cette politique de confidentialité de temps en temps. La version la plus récente est toujours disponible sur cette page.</p>
+            <p style="margin-top: 8px; color: var(--muted);">Dernière mise à jour : 30 mars 2026</p>
+        </div>
+
+        <div class="card">
+            <h2>11. Contact</h2>
+            <p><strong>Triple Solutions BV</strong><br>
+            E-mail : <a href="mailto:info@arcanta.io" style="color: var(--primary);">info@arcanta.io</a><br>
+            Site web : <a href="https://www.arcanta.io" style="color: var(--primary);">www.arcanta.io</a></p>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    &copy; 2026 Triple Solutions BV — The Catering Consultant
+</div>
+
+<script>
+function setLang(lang) {
+    document.querySelectorAll('[lang]').forEach(el => el.classList.remove('active-lang'));
+    document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active-lang'));
+    document.querySelectorAll('.lang-switcher button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    document.documentElement.lang = lang;
+}
+</script>
+
+</body>
+</html>
