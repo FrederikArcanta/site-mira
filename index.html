@@ -102,7 +102,7 @@
             color: var(--muted);
             font-size: 0.8rem;
         }
-        [lang]:not(.active-lang) { display: none; }
+        .container > div[lang]:not(.active-lang) { display: none; }
     </style>
 </head>
 <body>
@@ -393,8 +393,8 @@
 
 <script>
 function setLang(lang) {
-    document.querySelectorAll('[lang]').forEach(el => el.classList.remove('active-lang'));
-    document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.add('active-lang'));
+    document.querySelectorAll('.container > div[lang]').forEach(el => el.classList.remove('active-lang'));
+    document.querySelectorAll(`.container > div[lang="${lang}"]`).forEach(el => el.classList.add('active-lang'));
     document.querySelectorAll('.lang-switcher button').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
     document.documentElement.lang = lang;
