@@ -200,9 +200,62 @@ class LintFixtureTests(unittest.TestCase):
     def test_root_selector_is_not_hex(self) -> None:
         self.assertEqual(self.scan("root.css", "html, body, #root { height: 100%; }\n"), [])
 
-    def test_rgba_is_outside_the_gate(self) -> None:
-        self.assertEqual(self.scan("tijdelijke.html", '<circle stroke="rgba(255,255,255,0.18)"/>\n'), [])
-        self.assertEqual(self.scan("tijdelijke.html", '<circle stroke="rgb(196, 138, 63)"/>\n'), [])
+    def test_rgba_navy_fails_and_names_navy_token(self) -> None:
+        found = self.scan("tijdelijke.html", '<p style="color: rgba(27,46,74,0.5)">x</p>\n')
+        hits = [item for item in found if item.kind == "hex"]
+        self.assertTrue(hits)
+        self.assertEqual(hits[0].value, "#1B2E4A")
+        self.assertIn("rgba(27,46,74,0.5)", hits[0].message)
+        self.assertIn("colors.navy", hits[0].message)
+
+    def test_same_color_via_css_variable_passes(self) -> None:
+        self.assertEqual(self.scan("ok.css", ".kicker { color: var(--navy); }\n"), [])
+        self.assertEqual(self.scan("tijdelijke.html", '<p style="color: var(--navy)">x</p>\n'), [])
+
+    def test_modern_syntax_names_the_same_token(self) -> None:
+        slash = self.scan("app.js", 'el.style.color = "rgb(27 46 74 / 0.5)";\n')
+        turn = self.scan("tijdelijke.html", '<p style="color: hsl(0.6turn 46.5% 19.8%)">x</p>\n')
+        percent = self.scan("tijdelijke.html", '<p style="color: rgb(100%, 100%, 100%)">x</p>\n')
+        self.assertTrue(any(item.value == "#1B2E4A" and "colors.navy" in item.message for item in slash))
+        self.assertTrue(any(item.value == "#1B2E4A" and "colors.navy" in item.message for item in turn))
+        self.assertTrue(any(item.value == "#FFFFFF" and "colors.white" in item.message for item in percent))
+
+    def test_hsl_brand_color_fails(self) -> None:
+        found = self.scan("tijdelijke.html", '<p style="color: hsl(216, 46.5%, 19.8%)">x</p>\n')
+        hits = [item for item in found if item.kind == "hex"]
+        self.assertTrue(hits)
+        self.assertEqual(hits[0].value, "#1B2E4A")
+        self.assertIn("colors.navy", hits[0].message)
+
+    def test_hsla_and_rgb_name_the_token_like_hex(self) -> None:
+        hsla = self.scan("tijdelijke.html", '<p style="color: hsla(0, 0%, 100%, 0.2)">x</p>\n')
+        rgb = self.scan("tijdelijke.html", '<p style="color: rgb(196, 138, 63)">x</p>\n')
+        self.assertTrue(any(item.kind == "hex" and "colors.white" in item.message for item in hsla))
+        self.assertTrue(any(item.kind == "hex" and "colors.oker" in item.message for item in rgb))
+
+    def test_rgb_without_token_follows_loose_hex_rule(self) -> None:
+        loose = self.scan("tijdelijke.html", '<p style="color: rgb(1, 2, 3)">x</p>\n')
+        hexed = self.scan("tijdelijke.html", '<p style="color: #010203">x</p>\n')
+        self.assertTrue(loose and hexed)
+        self.assertEqual(loose[0].kind, hexed[0].kind)
+        self.assertEqual(loose[0].value, "#010203")
+        self.assertIn("geen losse hex", loose[0].message)
+        self.assertIn("(#010203)", loose[0].message)
+        self.assertIn("geen losse hex", hexed[0].message)
+
+    def test_unresolved_functional_color_is_not_guessed(self) -> None:
+        self.assertEqual(self.scan("ok.css", ".kicker { color: rgb(var(--navy) / 0.5); }\n"), [])
+
+    def test_rgb_oker_as_status_fails_like_hex(self) -> None:
+        text = '<p class="status" style="color: rgb(196, 138, 63)">ok</p>\n'
+        found = self.scan("tijdelijke.html", text)
+        self.assertTrue(any(item.kind == "hex" and "colors.oker" in item.message for item in found))
+        self.assertTrue(any(item.kind == "oker-status" and item.value == "#C48A3F" for item in found))
+
+    def test_warning_variable_defined_as_rgb_is_oker_status(self) -> None:
+        text = ":root { --warning: rgb(196, 138, 63); }\n.pill-warn { color: var(--warning); }\n"
+        found = self.scan("warn.css", text)
+        self.assertTrue(any(item.kind == "oker-status" and "var(--warning)" in item.value for item in found))
 
 
 class RatchetTests(unittest.TestCase):
@@ -430,6 +483,48 @@ geen scherm
         )
         self.assertTrue(pr_policy.check_sync(paths, "fix: formulier opslaan", []))
         self.assertEqual(pr_policy.check_sync(paths, "fix: formulier opslaan", ["tokens-sync"]), [])
+
+    def test_baseline_raise_without_label_fails(self) -> None:
+        base = "index.html\t1\thex\t#FFFFFF\tmsg\n"
+        head = base + "index.html\t2\thex\t#1B2E4A\tmsg\n"
+        errors = pr_policy.check_baseline_raise(base, head, [], self.BODY)
+        self.assertTrue(errors)
+        titled = self.BODY.replace("De pin klopt.", "De pin klopt. baseline-raise")
+        self.assertTrue(pr_policy.check_baseline_raise(base, head, [], titled))
+
+    def test_baseline_raise_with_label_without_reason_fails(self) -> None:
+        base = "index.html\t1\thex\t#FFFFFF\tmsg\n"
+        head = base + "index.html\t2\thex\t#1B2E4A\tmsg\n"
+        commented = self.BODY + "\n## Baseline-reden\n\n<!-- nog invullen -->\n"
+        blank = self.BODY + "\n## Baseline-reden\n\n   \n"
+        for body in (self.BODY, commented, blank):
+            errors = pr_policy.check_baseline_raise(base, head, ["baseline-raise"], body)
+            self.assertTrue(errors, body)
+
+    def test_baseline_raise_with_label_and_reason_passes(self) -> None:
+        base = "index.html\t1\thex\t#FFFFFF\tmsg\n"
+        head = base + "index.html\t2\thex\t#1B2E4A\tmsg\n"
+        body = self.BODY + "\n## Baseline-reden\n\nBestaande rgba hoort in de nulmeting.\n"
+        self.assertEqual(
+            pr_policy.check_baseline_raise(base, head, ["baseline-raise"], body),
+            [],
+        )
+
+    def test_baseline_raise_label_is_case_sensitive(self) -> None:
+        base = "index.html\t1\thex\t#FFFFFF\tmsg\n"
+        head = base + "index.html\t2\thex\t#1B2E4A\tmsg\n"
+        body = self.BODY + "\n## Baseline-reden\n\nBestaande rgba hoort in de nulmeting.\n"
+        self.assertTrue(pr_policy.check_baseline_raise(base, head, ["Baseline-raise"], body))
+
+    def test_baseline_same_or_lower_passes_without_label(self) -> None:
+        one = "index.html\t1\thex\t#FFFFFF\tmsg\n"
+        two = one + "index.html\t2\thex\t#1B2E4A\tmsg\n"
+        rewritten = "index.html\t9\thex\t#AABBCC\tandere tekst\n"
+        self.assertEqual(pr_policy.check_baseline_raise(one, one, [], self.BODY), [])
+        self.assertEqual(pr_policy.check_baseline_raise(one, rewritten, [], self.BODY), [])
+        self.assertEqual(pr_policy.check_baseline_raise(two, one, [], self.BODY), [])
+        commented = "# extra commentaar\n" + one
+        self.assertEqual(pr_policy.check_baseline_raise(one, commented, [], self.BODY), [])
 
 
 if __name__ == "__main__":

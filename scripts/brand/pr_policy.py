@@ -1,4 +1,10 @@
-"""PR-beleid: acceptatiecriteria, scherm, verify, en tokens-sync.
+"""PR-beleid: acceptatiecriteria, scherm, verify, tokens-sync en baseline-telling.
+
+Een PR die het aantal findings in docs/brand/baseline.txt laat stijgen,
+faalt. Uitzondering: het label baseline-raise staat er (hoofdlettergevoelig,
+zoals tokens-sync) én ## Baseline-reden heeft een niet-lege reden.
+Dalen of gelijk blijven mag zonder dat label. Commentaarregels tellen
+niet mee. De verify-regel blijft zoals ze is.
 
 Volgt AGENTS.md «Klaar als»:
 - Verify: een zin met niet gedraaid / niet uitgevoerd zonder vraagteken,
@@ -25,6 +31,8 @@ import os
 import re
 import subprocess
 import sys
+
+import lint
 
 SYNC_PATHS = (
     "docs/brand/tokens.json",
@@ -185,6 +193,46 @@ def check_sync(paths: list[str], title: str, labels: list[str]) -> list[str]:
     return [f"PR-beleid: {listed} wijzigt alleen in een PR met titel of label tokens-sync"]
 
 
+BASELINE_PATH = "docs/brand/baseline.txt"
+BASELINE_LABEL = "baseline-raise"
+
+
+def check_baseline_raise(
+    base_text: str,
+    head_text: str,
+    labels: list[str],
+    body: str,
+) -> list[str]:
+    before = len(lint.parse_baseline(base_text or ""))
+    after = len(lint.parse_baseline(head_text or ""))
+    if after <= before:
+        return []
+    reason = section_text(body or "", "Baseline-reden")
+    if BASELINE_LABEL in labels and reason:
+        return []
+    if BASELINE_LABEL not in labels:
+        return [
+            "PR-beleid: docs/brand/baseline.txt stijgt "
+            f"van {before} naar {after} findings. "
+            "Dat mag alleen met het label baseline-raise (hoofdlettergevoelig) "
+            "én een niet-lege reden in ## Baseline-reden."
+        ]
+    return [
+        "PR-beleid: label baseline-raise staat er, maar ## Baseline-reden ontbreekt of is leeg."
+    ]
+
+
+def file_at(rev: str, path: str) -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "show", f"{rev}:{path}"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
+    except subprocess.CalledProcessError:
+        return ""
+
+
 def changed_paths(base: str, head: str) -> list[str]:
     out = subprocess.check_output(
         ["git", "diff", "--name-only", base, head],
@@ -206,6 +254,15 @@ def main() -> int:
     else:
         paths = changed_paths(base, head)
         errors.extend(check_sync(paths, title, labels))
+        if BASELINE_PATH in paths:
+            errors.extend(
+                check_baseline_raise(
+                    file_at(base, BASELINE_PATH),
+                    file_at(head, BASELINE_PATH),
+                    labels,
+                    body,
+                )
+            )
     errors = check_body(body, paths) + errors
     if errors:
         for err in errors:

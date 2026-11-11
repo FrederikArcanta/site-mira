@@ -1,7 +1,7 @@
 # Nulmeting merkovertredingen in de publieke site op main e0a72f79e1aee245b9017c9cf481a9a2d660dcc1.
 # Sleutel is path + kind + value. Een hogere telling faalt. Lager mag (opruimen is een andere PR).
 # Dezelfde regel kan vaker staan als die waarde er vaker op staat.
-# Buiten deze poort, niet opgeruimd: rgba/rgb. Een #hex valt erbinnen.
+# rgb/rgba/hsl/hsla met letterlijke kanalen zitten in dezelfde kleurpoort als #hex.
 # path, line, kind, value, message
 
 index.html	9	hex	#475E7B	hardcoded #475E7B (#475E7B) heeft geen token in tokens.json; geen losse hex

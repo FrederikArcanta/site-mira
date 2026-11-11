@@ -6,9 +6,9 @@ Publieke site, statische HTML. Eigen silo. Alleen deze repo.
 
 Tokens: `docs/brand/tokens.json`. Pin: `docs/brand/TOKENS.sha256` en `EXPECTED_SHA` in `scripts/brand/pin.py`. Grenzen: `docs/brand/DESIGN.md` en `.cursor/rules/ui-tokens.mdc`.
 
-De lint scant de publieke site: `index.html` en elk ander bestand met `.html`, `.css`, `.scss`, `.js`, `.tsx` of `.jsx`. Tests, `docs/`, `scripts/`, `.github/` en `.cursor/` tellen niet mee. Bestaande overtredingen staan in `docs/brand/baseline.txt`. Die nulmeting niet opruimen in een feature-PR.
+De lint scant de publieke site: `index.html` en elk ander bestand met `.html`, `.css`, `.scss`, `.js`, `.tsx` of `.jsx`. Tests, `docs/`, `scripts/`, `.github/` en `.cursor/` tellen niet mee. Bestaande overtredingen staan in `docs/brand/baseline.txt`. Die nulmeting niet opruimen in een feature-PR. Een PR die het aantal findings in die baseline laat stijgen, faalt, tenzij het label `baseline-raise` op de PR staat (hoofdlettergevoelig, zoals `tokens-sync`) én de body een niet-lege reden heeft in `## Baseline-reden`. Dalen of gelijk blijven mag zonder dat label.
 
-Bekend gat: `rgba(...)` en `rgb(...)` vallen buiten de hex-poort. Een `#hex` valt erbinnen. De lint herkent Tailwind-arbitrary values in gescande tekst; deze repo heeft geen Tailwind-dependency.
+`rgb()`, `rgba()`, `hsl()` en `hsla()` met letterlijke kanalen vallen in dezelfde kleurpoort als een `#hex`. Alfa telt niet mee. Een kleur die op een token uitkomt noemt die token. Een kleur zonder token faalt zoals een losse hex. `var()`, `calc()` en `rgb(from …)` worden niet ingevuld. De lint herkent Tailwind-arbitrary values in gescande tekst; deze repo heeft geen Tailwind-dependency.
 
 Merkpoort: `python3 scripts/brand/lint.py`
 

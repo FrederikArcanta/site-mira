@@ -8,7 +8,7 @@ alwaysApply: false
 
 Deze checkout heeft geen `@arcanta/ui`. Kleur in de publieke site loopt via gedeelde tokens, niet via een losse hex in HTML, CSS of JS. De lint herkent ook Tailwind-arbitrary values (`[#…]`, `bg-[#…]`, `font-['…']`) als die vorm in een gescand bestand staat. Er is geen Tailwind-dependency.
 
-De walk is `index.html` en elk ander bestand van de publieke site met `.html`, `.css`, `.scss`, `.js`, `.tsx` of `.jsx`. Tests, `docs/`, `scripts/`, `.github/` en `.cursor/` tellen niet mee. `rgba(...)` en `rgb(...)` vallen buiten de hex-poort. Een `#hex` valt erbinnen.
+De walk is `index.html` en elk ander bestand van de publieke site met `.html`, `.css`, `.scss`, `.js`, `.tsx` of `.jsx`. Tests, `docs/`, `scripts/`, `.github/` en `.cursor/` tellen niet mee. `rgb()`, `rgba()`, `hsl()` en `hsla()` met letterlijke kanalen vallen in dezelfde kleurpoort als een `#hex`. Alfa telt niet mee. Dezelfde kleur via `var(--token)` slaagt. `var()`, `calc()` en `rgb(from …)` in een kanaal worden niet ingevuld.
 
 De lint noemt de token uit `docs/brand/tokens.json`. Dezelfde kleur via een token slaagt. Een `font-family`, `fontFamily` of font-weight buiten de tokens faalt.
 
