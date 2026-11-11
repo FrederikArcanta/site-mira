@@ -1,0 +1,29 @@
+---
+description: Merkgrenzen voor de publieke site in site-mira. Hex, fonts en oker-status in HTML, CSS en JS.
+globs: "index.html,**/*.html,**/*.css,**/*.scss,**/*.js,**/*.jsx,**/*.tsx"
+alwaysApply: false
+---
+
+# UI-tokens
+
+Deze checkout heeft geen `@arcanta/ui`. Kleur in de publieke site loopt via gedeelde tokens, niet via een losse hex in HTML, CSS of JS. De lint herkent ook Tailwind-arbitrary values (`[#…]`, `bg-[#…]`, `font-['…']`) als die vorm in een gescand bestand staat. Er is geen Tailwind-dependency.
+
+De walk is `index.html` en elk ander bestand van de publieke site met `.html`, `.css`, `.scss`, `.js`, `.tsx` of `.jsx`. Tests, `docs/`, `scripts/`, `.github/` en `.cursor/` tellen niet mee. `rgba(...)` en `rgb(...)` vallen buiten de hex-poort. Een `#hex` valt erbinnen.
+
+De lint noemt de token uit `docs/brand/tokens.json`. Dezelfde kleur via een token slaagt. Een `font-family`, `fontFamily` of font-weight buiten de tokens faalt.
+
+Uitzondering alleen met een commentaar op dezelfde of de vorige regel, mét reden: `brand-allow: logo-asset …` of `brand-allow: third-party …`. Bestaande overtredingen staan in `docs/brand/baseline.txt`. Die nulmeting niet in een feature-PR opruimen.
+
+## Typografie (bindend, tussentijd)
+
+Bindende tussenregel, tot UI/UX en Designer de Inter/Lato-spanning sluiten: web-body is Inter; Lato niet gebruiken; typografie in de publieke site niet wijzigen. Een wissel naar Inter in de publieke site is daarmee ook een fail.
+
+Een typografiewijziging in de publieke site die een bekende token gebruikt (bijvoorbeeld een wissel naar Inter) faalt ook, tot UI/UX en Designer de spanning sluiten. Agents kiezen in de tussentijd geen eigen lettertype. `fonts.web.product_ui` blijft «Lato (buiten scope)».
+
+## Oker
+
+Oker nooit als statuskleur (success, OK), noch als hex, noch via de oker-token. Oker als merkkleur of accent, zonder statusbetekenis, mag. Semantisch groen voor status mag (`semantic.ok`).
+
+## Sync
+
+`docs/brand/tokens.json` wijzigt alleen in een PR met titel of label `tokens-sync`, samen met `TOKENS.sha256`, `DESIGN.md` en `EXPECTED_SHA` in `scripts/brand/pin.py`. Niet herschrijven. `tokens-sync` is hoofdlettergevoelig.

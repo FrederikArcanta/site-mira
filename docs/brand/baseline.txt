@@ -1,0 +1,21 @@
+# Nulmeting merkovertredingen in de publieke site op main e0a72f79e1aee245b9017c9cf481a9a2d660dcc1.
+# Sleutel is path + kind + value. Een hogere telling faalt. Lager mag (opruimen is een andere PR).
+# Dezelfde regel kan vaker staan als die waarde er vaker op staat.
+# Buiten deze poort, niet opgeruimd: rgba/rgb. Een #hex valt erbinnen.
+# path, line, kind, value, message
+
+index.html	9	hex	#475E7B	hardcoded #475E7B (#475E7B) heeft geen token in tokens.json; geen losse hex
+index.html	10	hex	#FAFBFC	hardcoded #FAFBFC (#FAFBFC) heeft geen token in tokens.json; geen losse hex
+index.html	11	hex	#FFFFFF	hardcoded #FFFFFF is token colors.white; gebruik de token
+index.html	12	hex	#1A1A2E	hardcoded #1a1a2e (#1A1A2E) heeft geen token in tokens.json; geen losse hex
+index.html	13	hex	#6B7280	hardcoded #6b7280 (#6B7280) heeft geen token in tokens.json; geen losse hex
+index.html	14	hex	#E5E7EB	hardcoded #e5e7eb (#E5E7EB) heeft geen token in tokens.json; geen losse hex
+index.html	18	hex	#0F172A	hardcoded #0f172a (#0F172A) heeft geen token in tokens.json; geen losse hex
+index.html	19	hex	#1E293B	hardcoded #1e293b (#1E293B) heeft geen token in tokens.json; geen losse hex
+index.html	20	hex	#E2E8F0	hardcoded #e2e8f0 (#E2E8F0) heeft geen token in tokens.json; geen losse hex
+index.html	21	hex	#94A3B8	hardcoded #94a3b8 (#94A3B8) heeft geen token in tokens.json; geen losse hex
+index.html	22	hex	#334155	hardcoded #334155 (#334155) heeft geen token in tokens.json; geen losse hex
+index.html	27	font-outside	roboto	Roboto staat niet in de tokens. Geen eigen lettertype. Een wissel naar Inter faalt ook.
+index.html	27	font-outside	segoe ui	Segoe UI staat niet in de tokens. Geen eigen lettertype. Een wissel naar Inter faalt ook.
+index.html	62	font-weight	600	font-weight 600 staat niet in de tokens; alleen regular (400) en bold (700)
+index.html	74	font-weight	600	font-weight 600 staat niet in de tokens; alleen regular (400) en bold (700)
