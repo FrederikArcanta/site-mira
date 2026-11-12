@@ -1,4 +1,4 @@
-"""Merklint voor de publieke site: hex, font buiten tokens, wissel naar Inter, oker-als-status.
+"""Merklint voor de publieke site: kleur, font buiten tokens, wissel naar Inter, oker-als-status.
 
 De walk scant index.html en elk ander bestand van de publieke site met
 .html, .css, .scss, .js, .tsx of .jsx. Tests, docs/, scripts/, .github/
@@ -9,15 +9,19 @@ gescand bestand staat. Er is geen Tailwind-dependency in deze repo.
 Bestaande overtredingen staan in de nulmeting. Een hogere telling faalt.
 Verwijderen telt niet als fail. Dit script wijzigt de site niet.
 
-Bekend gat: rgba(...) en rgb(...) vallen buiten de hex-poort. Een #hex
-valt erbinnen. De lint is regelgebonden; een font-weight over meerdere
-regels telt niet mee.
+rgb(), rgba(), hsl() en hsla() met letterlijke kanalen vallen in dezelfde
+kleurpoort als een #hex. Alfa telt niet mee voor de kleur. Een waarde die
+op een token uitkomt noemt die token. Een waarde zonder token faalt met
+dezelfde boodschap als een losse hex. var(), calc() en rgb(from …) worden
+niet ingevuld: de lint rekent geen expressies uit. De lint is regelgebonden;
+een kleur of font-weight over meerdere regels telt niet mee.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 from collections import Counter
@@ -76,6 +80,10 @@ STATUS_WORD = re.compile(
     re.IGNORECASE,
 )
 HEX_RE = re.compile(r"#([0-9A-Fa-f]{3,8})")
+FUNC_COLOR_RE = re.compile(
+    r"(?<![\w-])(rgba?|hsla?)\(\s*([^)]*)\)",
+    re.IGNORECASE,
+)
 VAR_RE = re.compile(r"var\(\s*(--[A-Za-z0-9_-]+)")
 PROP_RE = re.compile(r"(--[A-Za-z0-9_-]+)\s*:\s*([^;}{]+)")
 FONT_FAMILY_RE = re.compile(r"font-family\s*:\s*([^;}{]+)", re.IGNORECASE)
@@ -217,6 +225,141 @@ def hex_message(catalog: dict, original: str, expanded: str) -> str:
     return f"hardcoded {original} ({shown}) heeft geen token in tokens.json; geen losse hex"
 
 
+def _float_token(token: str) -> float | None:
+    try:
+        return float(token)
+    except ValueError:
+        return None
+
+
+def _css_byte(value: float) -> int:
+    clamped = min(255.0, max(0.0, value))
+    return int(min(255, math.floor(clamped + 0.5)))
+
+
+def _rgb_channel(token: str) -> int | None:
+    token = token.strip()
+    if token.endswith("%"):
+        number = _float_token(token[:-1])
+        if number is None:
+            return None
+        return _css_byte(number / 100 * 255)
+    if any(char.isalpha() for char in token):
+        return None
+    number = _float_token(token)
+    if number is None:
+        return None
+    return _css_byte(number)
+
+
+def _percent(token: str) -> float | None:
+    token = token.strip()
+    if not token.endswith("%"):
+        return None
+    return _float_token(token[:-1])
+
+
+def _hue(token: str) -> float | None:
+    raw = token.strip().casefold()
+    scale = 1.0
+    for suffix, factor in (("deg", 1.0), ("turn", 360.0), ("rad", 180.0 / math.pi), ("grad", 0.9)):
+        if raw.endswith(suffix):
+            raw = raw[: -len(suffix)].strip()
+            scale = factor
+            break
+    else:
+        if any(char.isalpha() for char in raw):
+            return None
+    number = _float_token(raw)
+    if number is None:
+        return None
+    return number * scale
+
+
+def _hsl_to_rgb(hue: float, sat_pct: float, light_pct: float) -> tuple[int, int, int]:
+    hue = hue % 360
+    sat = max(0.0, min(100.0, sat_pct)) / 100
+    light = max(0.0, min(100.0, light_pct)) / 100
+    chroma = (1 - abs(2 * light - 1)) * sat
+    sector = hue / 60
+    cross = chroma * (1 - abs(sector % 2 - 1))
+    match = light - chroma / 2
+    if sector < 1:
+        red, green, blue = chroma, cross, 0.0
+    elif sector < 2:
+        red, green, blue = cross, chroma, 0.0
+    elif sector < 3:
+        red, green, blue = 0.0, chroma, cross
+    elif sector < 4:
+        red, green, blue = 0.0, cross, chroma
+    elif sector < 5:
+        red, green, blue = cross, 0.0, chroma
+    else:
+        red, green, blue = chroma, 0.0, cross
+    return (
+        _css_byte((red + match) * 255),
+        _css_byte((green + match) * 255),
+        _css_byte((blue + match) * 255),
+    )
+
+
+def parse_func_color(name: str, body: str) -> str | None:
+    """Zet een letterlijke rgb/rgba/hsl/hsla om naar RRGGBB. Alfa valt weg.
+
+    var(), calc() en relatieve rgb(from …) geven None: die kleur is niet
+    bekend zonder de expressie uit te rekenen.
+    """
+    raw = body.strip()
+    if not raw:
+        return None
+    lowered = raw.casefold()
+    if "var(" in lowered or "calc(" in lowered or lowered.startswith("from"):
+        return None
+    parts = raw.replace("/", " ").replace(",", " ").split()
+    if len(parts) not in (3, 4):
+        return None
+    channels = parts[:3]
+    if name.casefold().startswith("rgb"):
+        red = _rgb_channel(channels[0])
+        green = _rgb_channel(channels[1])
+        blue = _rgb_channel(channels[2])
+        if red is None or green is None or blue is None:
+            return None
+        return f"{red:02X}{green:02X}{blue:02X}"
+    hue = _hue(channels[0])
+    sat = _percent(channels[1])
+    light = _percent(channels[2])
+    if hue is None or sat is None or light is None:
+        return None
+    red, green, blue = _hsl_to_rgb(hue, sat, light)
+    return f"{red:02X}{green:02X}{blue:02X}"
+
+
+def append_color(
+    findings: list[Finding],
+    catalog: dict,
+    rel: str,
+    line_no: int,
+    original: str,
+    expanded: str,
+    line_status: bool,
+) -> None:
+    findings.append(
+        Finding(rel, line_no, "hex", f"#{expanded}", hex_message(catalog, original, expanded))
+    )
+    if expanded in oker_hexes() and line_status:
+        token = "colors.oker" if expanded == "C48A3F" else "web_only.oker_dark"
+        findings.append(
+            Finding(
+                rel,
+                line_no,
+                "oker-status",
+                f"#{expanded}",
+                f"oker als status ({original}, {token}) faalt; semantisch groen voor status mag (semantic.ok)",
+            )
+        )
+
+
 def font_kind_message(catalog: dict, family: str) -> tuple[str, str] | None:
     key = family.casefold()
     if key in GENERICS or key.startswith("var("):
@@ -302,7 +445,6 @@ def findings_for_line(
     oker_vars: dict[str, str],
 ) -> list[Finding]:
     findings: list[Finding] = []
-    oker = oker_hexes()
     prop_match = PROP_RE.search(line)
     prop_name = prop_match.group(1) if prop_match else ""
     prop_is_status = bool(prop_name) and status_context(prop_name)
@@ -325,21 +467,15 @@ def findings_for_line(
         expanded = expand_hex(body)
         if not expanded:
             continue
-        original = "#" + body
-        findings.append(
-            Finding(rel, line_no, "hex", f"#{expanded}", hex_message(catalog, original, expanded))
-        )
-        if expanded in oker and line_status:
-            token = "colors.oker" if expanded == "C48A3F" else "web_only.oker_dark"
-            findings.append(
-                Finding(
-                    rel,
-                    line_no,
-                    "oker-status",
-                    f"#{expanded}",
-                    f"oker als status ({original}, {token}) faalt; semantisch groen voor status mag (semantic.ok)",
-                )
-            )
+        append_color(findings, catalog, rel, line_no, "#" + body, expanded, line_status)
+
+    for match in FUNC_COLOR_RE.finditer(line):
+        if not color_context(line, match.start()):
+            continue
+        expanded = parse_func_color(match.group(1), match.group(2))
+        if not expanded:
+            continue
+        append_color(findings, catalog, rel, line_no, match.group(0), expanded, line_status)
 
     for match in VAR_RE.finditer(line):
         name = match.group(1).lower()
@@ -419,8 +555,13 @@ def collect_oker_vars(text: str) -> dict[str, str]:
     oker = oker_hexes()
     for match in PROP_RE.finditer(text):
         name = match.group(1).lower()
-        for hex_match in HEX_RE.finditer(match.group(2)):
+        value = match.group(2)
+        for hex_match in HEX_RE.finditer(value):
             expanded = expand_hex(hex_match.group(1))
+            if expanded in oker:
+                found[name] = expanded
+        for func in FUNC_COLOR_RE.finditer(value):
+            expanded = parse_func_color(func.group(1), func.group(2))
             if expanded in oker:
                 found[name] = expanded
     return found
@@ -538,7 +679,7 @@ def write_baseline(findings: list[Finding]) -> None:
         f"# Nulmeting merkovertredingen in de publieke site op main {BASE_COMMIT}.\n"
         "# Sleutel is path + kind + value. Een hogere telling faalt. Lager mag (opruimen is een andere PR).\n"
         "# Dezelfde regel kan vaker staan als die waarde er vaker op staat.\n"
-        "# Buiten deze poort, niet opgeruimd: rgba/rgb. Een #hex valt erbinnen.\n"
+        "# rgb/rgba/hsl/hsla met letterlijke kanalen zitten in dezelfde kleurpoort als #hex.\n"
         "# path, line, kind, value, message"
     )
     BASELINE.write_text(format_baseline(findings, header), encoding="utf-8")
