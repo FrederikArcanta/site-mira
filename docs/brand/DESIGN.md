@@ -5,11 +5,11 @@ Korte do’s en don’ts. Geen tweede merkboek. Tokens: `docs/brand/tokens.json`
 ## Do
 
 - Kleur in product-UI via gedeelde tokens: `@arcanta/ui` of CSS-variabelen.
-- Oker als merkkleur of accent, zonder statusbetekenis, mag (R-3). Semantisch groen voor status mag.
+- Oker als merkkleur of accent, zonder statusbetekenis, mag, binnen de toegelaten accentvormen OK-1 tot OK-5 (`oker_rule.allowed` in tokens.json). Semantisch groen voor status mag.
 
 ## Don’t
 
-- Oker nooit als statuskleur (success, OK), noch als hex, noch via de oker-token of een CSS-variabele.
+- Oker nooit als statuskleur (success, OK; regel R-3), noch als hex, noch via de oker-token of een CSS-variabele.
 - Geen hardcoded hex in product-UI.
 - `docs/brand/tokens.json` wijzigt alleen in een benoemde tokens-sync PR (titel of label `tokens-sync`). Niet herschrijven. Proces-eigenaars: Designer en Product Lead. GitHub dwingt op dat pad `@FrederikArcanta` af (geen usernames voor Designer of Product Lead op dit account).
 

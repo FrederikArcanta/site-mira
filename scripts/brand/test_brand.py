@@ -29,9 +29,11 @@ class PinTests(unittest.TestCase):
         data = json.loads(pin.TOKENS.read_bytes())
         self.assertEqual(data["fonts"]["web"]["product_ui"], "Lato (buiten scope)")
 
-    def test_design_keeps_the_known_typo(self) -> None:
+    def test_design_uses_ok_and_r3_naming(self) -> None:
         text = pin.DESIGN.read_text(encoding="utf-8")
-        self.assertIn("mag (R-3)", text)
+        self.assertIn("OK-1 tot OK-5", text)
+        self.assertIn("regel R-3", text)
+        self.assertNotIn("mag (R-3)", text)
         self.assertIn(pin.EXPECTED_SHA, text)
 
     def test_tampered_bytes_fail(self) -> None:
