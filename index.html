@@ -7,11 +7,11 @@
     <style>
         :root {
             --primary: #475E7B;
-            --bg: #FAFBFC;
-            --card: #FFFFFF;
+            --bg: var(--white);
+            --card: var(--white);
             --text: #1a1a2e;
             --muted: #6b7280;
-            --border: #e5e7eb;
+            --border: var(--line);
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -103,6 +103,10 @@
             font-size: 0.8rem;
         }
         .container > div[lang]:not(.active-lang) { display: none; }
+        :root {
+            --white: white;
+            --line: #E3E6E8;
+        }
     </style>
 </head>
 <body>
