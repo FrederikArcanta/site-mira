@@ -21,6 +21,6 @@ Een typografiewijziging in de product-UI die een bekende token gebruikt (bijvoor
 
 ## Pin van tokens.json
 
-sha256: `7783233f1049a74b9f2fe5c00c4cb4c07a6601ec8124e9b162e691ec58ee799d`
+sha256: `82cfa9698cba74e52198708ce87647bc44931b4c4060321f10b4807a2049a527`
 
 Dezelfde pin staat in `docs/brand/TOKENS.sha256`.

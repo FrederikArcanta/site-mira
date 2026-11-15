@@ -14,20 +14,23 @@ class PinTests(unittest.TestCase):
     def test_expected_sha_is_the_landed_pin(self) -> None:
         self.assertEqual(
             pin.EXPECTED_SHA,
-            "7783233f1049a74b9f2fe5c00c4cb4c07a6601ec8124e9b162e691ec58ee799d",
+            "82cfa9698cba74e52198708ce87647bc44931b4c4060321f10b4807a2049a527",
         )
 
     def test_committed_copy_matches_pin(self) -> None:
         self.assertEqual(pin.verify(), [])
 
-    def test_versions_are_both_1_1_4(self) -> None:
+    def test_versions_are_both_1_2_0(self) -> None:
         data = json.loads(pin.TOKENS.read_bytes())
-        self.assertEqual(data["version"], "1.1.4")
-        self.assertEqual(data["custom_properties"]["brand_version"], "1.1.4")
+        self.assertEqual(data["version"], "1.2.0")
+        self.assertEqual(data["custom_properties"]["brand_version"], "1.2.0")
 
-    def test_product_ui_stays_lato_out_of_scope(self) -> None:
+    def test_product_ui_and_mono_match_master(self) -> None:
         data = json.loads(pin.TOKENS.read_bytes())
-        self.assertEqual(data["fonts"]["web"]["product_ui"], "Lato (buiten scope)")
+        web = data["fonts"]["web"]
+        self.assertEqual(web["product_ui"], "Lato")
+        self.assertEqual(web["mono"], "JetBrains Mono")
+        self.assertEqual(web["body"], "Inter")
 
     def test_design_uses_ok_and_r3_naming(self) -> None:
         text = pin.DESIGN.read_text(encoding="utf-8")
