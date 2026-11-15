@@ -15,7 +15,7 @@ SHA_FILE = ROOT / "docs" / "brand" / "TOKENS.sha256"
 DESIGN = ROOT / "docs" / "brand" / "DESIGN.md"
 
 # Bij een tokens-sync samen bijwerken met tokens.json, TOKENS.sha256 en DESIGN.md.
-EXPECTED_SHA = "7783233f1049a74b9f2fe5c00c4cb4c07a6601ec8124e9b162e691ec58ee799d"
+EXPECTED_SHA = "82cfa9698cba74e52198708ce87647bc44931b4c4060321f10b4807a2049a527"
 
 
 def file_sha(path: Path) -> str:
